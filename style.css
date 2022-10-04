@@ -1,3 +1,5 @@
-h1{
-    color: purple;
+button{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
