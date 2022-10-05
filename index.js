@@ -3,7 +3,7 @@ let state;
 
 let snake = {
   body: [ [10, 5], [10, 6], [10, 7], [10, 8] ],
-  nextDirection: [1, 0]
+  nextDirection: [1, 0],
 }
 
 let gameState = {
@@ -21,7 +21,59 @@ let scoreBoard = {
   now: 0, //score resets each time the snake dies
   best: 0, //score is saved each time it is increased by 1
 }
+
+let table = document.getElementById('table')
+
 console.log(gameState.snake.body)
+
+
+function createGrid(num, num1){
+  makeRow(num)
+  makeCell(num1)
+}
+createGrid(20,40)
+
+function makeRow(num){
+  let row = document.createElement('tr')
+  for (let i = 0; i<num;i++){
+    let element = num[i]
+     
+     console.log(i)
+  }
+  table.appendChild(row)
+}
+
+function makeCell(num){
+  let cell = document.createElement('td')
+  for(let i=0; i<num;i++){
+    let element = num[i]
+    console.log(i)
+  }
+  row.appendChild(cell)
+}
+
+console.log(makeCell())
+
+// function eatApple(){
+//   if(snake.nextDirection === gameState.apple){
+//   let Snake = snake.push()
+//   }else{
+//     snake = snake.pop() //every time it ticks 
+//   }
+// }
+// console.log(eatApple())
+
+
+// if the player presses up the snake will go up
+// if the player presses down the snake will go down
+// if the player presses right the snake will go right
+// if the player presses left the snake will go left
+
+
+
+
+
+
 
 
 // function buildInitialState() {
