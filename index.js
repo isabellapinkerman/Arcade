@@ -15,31 +15,41 @@ let speed = 7;
 let directionX = 0;
 let directionY = 0;
 
-let score = 0
-let bestScore = 0
+let score = [0]
+let bestScore = [0]
+
+board = document.getElementById('board');
+board.height = rows * tileSize
+board.width = columns * tileSize
+context = board.getContext('2d')
 
 
 let gameOver = false
+
+
 
 function startGame(){
   location.reload(true)
 }
 
+
+
 function drawScore(){
-  context.fillText(`Score: ${score}`, 10,15)
-}
-function drawBestScore(){
-  context.fillText(`Best Score: ${bestScore}`, 10,25)
+  context.fillText(`Score: ${score[0]}`, 10,15)
 }
 
-  board = document.getElementById('board');
-  board.height = rows * tileSize
-  board.width = columns * tileSize
-  context = board.getContext('2d')
+function drawBestScore(){
+  context.fillText(`Best Score: ${bestScore[0]}`, 10,25)
+}
+
+
+
 
 placeApple()
 document.addEventListener('keyup', keyup)
   setInterval(update, 1000/speed)
+
+
 
 
 function update() {
@@ -57,13 +67,11 @@ function update() {
 
 if(snakeX === appleX && snakeY === appleY){
   snake.push([appleX, appleY]);
-  score += 1
-  let saveScore = score
-  bestScore = saveScore
+  score[0] += 1
+  bestScore[0] = score[0]
   placeApple();
-  return bestScore
+  
 }
-
 
 
 for(let i = snake.length-1;i>0;i--){
@@ -71,6 +79,10 @@ for(let i = snake.length-1;i>0;i--){
 }
 if(snake.length){
   snake[0]= [snakeX, snakeY]
+}
+
+if(score>4){
+  removeTail()
 }
 
   context.fillStyle='white'
@@ -85,10 +97,18 @@ if(snake.length){
     gameOver = true
     alert("GAME OVER")
     location.reload(true)
-    
   }
-  return bestScore
+
+  for(let s=0;s<snake.length;s++){
+    if(snakeX === snake[s][0]&& snakeY === snake[s][1]){
+      gameOver = true
+      alert("GAME OVER")
+      location.reload(true)
+    }
+  }
+
 }
+
 
 
 function placeApple(){
@@ -96,6 +116,12 @@ function placeApple(){
   appleX = Math.floor(Math.random()* columns)* tileSize
   appleY = Math.floor(Math.random()* rows)* tileSize
 }
+
+function removeTail(){
+  setInterval(1000/10)
+  snake[-1,1].splice
+}
+
 
 function keyup(event){
  if(event.code == 'ArrowUp' && directionY !== 1){
