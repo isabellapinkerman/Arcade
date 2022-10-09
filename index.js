@@ -1,114 +1,118 @@
-// state
-let state;
+const tileSize = 25
+let rows = 20
+let columns = 20
+let board;
+let context;
 
-let snake = {
-  body: [ [10, 5], [10, 6], [10, 7], [10, 8] ],
-  nextDirection: [1, 0],
+let snakeX = tileSize * 5;
+let snakeY = tileSize * 5;
+let snake = []
+
+let appleX;
+let appleY;
+
+let speed = 7;
+let directionX = 0;
+let directionY = 0;
+
+let score = 0
+let bestScore = 0
+
+
+let gameOver = false
+
+function startGame(){
+  location.reload(true)
 }
 
-let gameState = {
-  apple: [11, 8],
-  snake: snake // from above
+function drawScore(){
+  context.fillText(`Score: ${score}`, 10,15)
+}
+function drawBestScore(){
+  context.fillText(`Best Score: ${bestScore}`, 10,25)
 }
 
-const difficulty = {
-  easy: 0, //maintain speed of snake
-  medium: 0, //poison apples introduced
-  hard: 0, //poison apples and speed increased each time the snake eats an apple
-}
+  board = document.getElementById('board');
+  board.height = rows * tileSize
+  board.width = columns * tileSize
+  context = board.getContext('2d')
 
-let scoreBoard = {
-  now: 0, //score resets each time the snake dies
-  best: 0, //score is saved each time it is increased by 1
-}
-
-let table = document.getElementById('table')
-
-console.log(gameState.snake.body)
+placeApple()
+document.addEventListener('keyup', keyup)
+  setInterval(update, 1000/speed)
 
 
-function createGrid(num, num1){
-  makeRow(num)
-  makeCell(num1)
-}
-createGrid(20,40)
-
-function makeRow(num){
-  let row = document.createElement('tr')
-  for (let i = 0; i<num;i++){
-    let element = num[i]
-     
-     console.log(i)
+function update() {
+  if(gameOver){
+    return;
   }
-  table.appendChild(row)
+  context.fillStyle='black'
+  context.fillRect(0,0, board.width, board.height)
+
+  context.fillStyle='red'
+  context.fillRect(appleX, appleY, tileSize, tileSize)
+
+  drawScore()
+  drawBestScore()
+
+if(snakeX === appleX && snakeY === appleY){
+  snake.push([appleX, appleY]);
+  score += 1
+  let saveScore = score
+  bestScore = saveScore
+  placeApple();
+  return bestScore
 }
 
-function makeCell(num){
-  let cell = document.createElement('td')
-  for(let i=0; i<num;i++){
-    let element = num[i]
-    console.log(i)
+
+
+for(let i = snake.length-1;i>0;i--){
+  snake[i]=snake[i-1];
+}
+if(snake.length){
+  snake[0]= [snakeX, snakeY]
+}
+
+  context.fillStyle='white'
+  snakeX += directionX * tileSize
+  snakeY += directionY * tileSize
+  context.fillRect(snakeX, snakeY, tileSize, tileSize)
+  for(let i=0;i<snake.length;i++){
+    context.fillRect(snake[i][0],snake[i][1], tileSize, tileSize)
   }
-  row.appendChild(cell)
+
+  if(snakeX < 0 || snakeX > columns*tileSize || snakeY < 0 || snakeY > rows*tileSize){
+    gameOver = true
+    alert("GAME OVER")
+    location.reload(true)
+    
+  }
+  return bestScore
 }
 
-console.log(makeCell())
 
-// function eatApple(){
-//   if(snake.nextDirection === gameState.apple){
-//   let Snake = snake.push()
-//   }else{
-//     snake = snake.pop() //every time it ticks 
-//   }
-// }
-// console.log(eatApple())
+function placeApple(){
 
+  appleX = Math.floor(Math.random()* columns)* tileSize
+  appleY = Math.floor(Math.random()* rows)* tileSize
+}
 
-// if the player presses up the snake will go up
-// if the player presses down the snake will go down
-// if the player presses right the snake will go right
-// if the player presses left the snake will go left
-
-
-
-
-
-
-
-
-// function buildInitialState() {
-//  function createGrid(){
-//   //need to create 20 rows and 40 cells
-//   //snake needs to be present on screen as well
-//  }
-// }
-
-// // render
-// function renderState() {
-//  //after play is pressed, snake will begin to move on screen
-// }
-
-// // maybe a dozen or so helper functions for tiny pieces of the interface
-
-// // listeners
-// function onBoardClick() {
-//   // update state, maybe with another dozen or so helper functions...
-// //when up, down, right, or left arrow is pressed the snake will need to move in the desired direction
-//   renderState() // show the user the new state
-// }
-// const board = document.getElementById('board');
-// board.addEventListener('click', onBoardClick); // etc
-// // add to above
-// function tick() {
-//   // this is an incremental change that happens to the state every time you update...
-// //tail removed every time the game ticks 
-// //however if it is eating an apple, you wont remove the tail when the snake grows,youll simply add the new head without doing that
-//   renderState()
-// }
-
-// setInterval(tick, 1000 / 30) // as close to 30 frames per second as possible
-
-// // now you might have things like
-// document.addEventListener('keydown', function (event) {
-//   // here you might read which key was pressed and update the state accordingly
-// })
+function keyup(event){
+ if(event.code == 'ArrowUp' && directionY !== 1){
+ directionX = 0;
+ directionY = -1;
+}
+ else if(event.code == 'ArrowDown' && directionY !== -1){
+  directionX = 0;
+  directionY = 1;
+}
+else if(event.code == 'ArrowLeft' && directionX !== 1){
+  directionX = -1;
+  directionY = 0;
+  
+}
+else if(event.code == 'ArrowRight' && directionX !== -1){
+  directionX = 1;
+  directionY = 0;
+}
+}
